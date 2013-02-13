@@ -22,7 +22,6 @@ PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://qt-project.org"
-#PKG_URL="http://origin.releases.qt-project.org/qt5.0/beta2/single/qt-everywhere-opensource-src-5.0.0-beta2.tar.gz"
 PKG_URL="http://releases.qt-project.org/qt5/${PKG_VERSION}/single/qt-everywhere-opensource-src-${PKG_VERSION}.tar.gz"
 
 case $TARGET_ARCH in
