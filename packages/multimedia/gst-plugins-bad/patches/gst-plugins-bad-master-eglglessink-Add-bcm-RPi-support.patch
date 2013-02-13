@@ -1,0 +1,204 @@
+diff --git a/configure.ac b/configure.ac
+index d0d352e..71ceda7 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1637,7 +1637,7 @@ AG_GST_CHECK_FEATURE(RSVG, [rsvg decoder], rsvg, [
+ 
+ dnl *** eglgles ***
+ AC_ARG_WITH([egl-window-system],
+-              AS_HELP_STRING([--with-egl-window-system],[EGL window system to use (x11, mali-fb, none)]),
++              AS_HELP_STRING([--with-egl-window-system],[EGL window system to use (x11, mali-fb, rpi, none)]),
+               [EGL_WINDOW_SYSTEM="$withval"],
+               [EGL_WINDOW_SYSTEM="none"])
+ 
+@@ -1713,6 +1713,18 @@ AG_GST_CHECK_FEATURE(EGLGLES, [eglgles sink], eglgles, [
+           CFLAGS=$old_CFLAGS
+         ])
+       ;;
++    rpi)
++      old_LIBS=$LIBS
++      old_CFLAGS=$CFLAGS
++
++      AC_CHECK_HEADER(bcm_host.h, [
++        HAVE_EGLGLES="yes"
++        EGLGLES_LIBS="-lGLESv2 -lEGL -lbcm_host"
++        AC_DEFINE(USE_EGL_RPI, [1], [Use RPi EGL window system])
++        LIBS=$old_LIBS
++        CFLAGS=$old_CFLAGS
++      ])
++      ;;
+     *)
+       AC_MSG_ERROR([invalid EGL window system specified])
+       ;;
+diff --git a/ext/eglgles/gsteglglessink.c b/ext/eglgles/gsteglglessink.c
+index 629c4f5..40e655d 100644
+--- a/ext/eglgles/gsteglglessink.c
++++ b/ext/eglgles/gsteglglessink.c
+@@ -128,6 +128,11 @@
+ #include <GLES2/gl2.h>
+ #include <GLES2/gl2ext.h>
+ 
++#ifdef USE_EGL_RPI
++#include <bcm_host.h>
++#include <GLES/gl.h>
++#endif
++
+ #include "video_platform_wrapper.h"
+ 
+ #include "gsteglglessink.h"
+@@ -1535,12 +1540,29 @@ static gboolean
+ gst_eglglessink_init_egl_display (GstEglGlesSink * eglglessink)
+ {
+   GST_DEBUG_OBJECT (eglglessink, "Enter EGL initial configuration");
++#ifdef USE_EGL_RPI
++  GST_DEBUG_OBJECT (eglglessink, "Initialize BCM host");
++  bcm_host_init ();
++#endif
+ 
++#ifndef USE_EGL_RPI
++  eglglessink->eglglesctx.display = eglGetDisplay (EGL_DEFAULT_DISPLAY);
++  if (eglglessink->eglglesctx.display == EGL_NO_DISPLAY) {
++    GST_ERROR_OBJECT (eglglessink, "Could not get EGL display connection");
++    goto HANDLE_ERROR;          /* No EGL error is set by eglGetDisplay() */
++  }
++#else
++  if (!eglMakeCurrent (1, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT)) {
++    got_egl_error ("eglMakeCurrent");
++    GST_ERROR_OBJECT (eglglessink, "Couldn't unbind context");
++    return FALSE;
++  }
+   eglglessink->eglglesctx.display = eglGetDisplay (EGL_DEFAULT_DISPLAY);
+   if (eglglessink->eglglesctx.display == EGL_NO_DISPLAY) {
+     GST_ERROR_OBJECT (eglglessink, "Could not get EGL display connection");
+     goto HANDLE_ERROR;          /* No EGL error is set by eglGetDisplay() */
+   }
++#endif
+ 
+   if (!eglInitialize (eglglessink->eglglesctx.display,
+           &eglglessink->eglglesctx.egl_major,
+diff --git a/ext/eglgles/video_platform_wrapper.c b/ext/eglgles/video_platform_wrapper.c
+index bc71a69..1a95cf3 100644
+--- a/ext/eglgles/video_platform_wrapper.c
++++ b/ext/eglgles/video_platform_wrapper.c
+@@ -616,7 +616,7 @@ platform_free_eglimage (EGLDisplay display, EGLContext context, GLuint tex_id,
+ 
+ #endif
+ 
+-#if !defined(USE_EGL_X11) && !defined(USE_EGL_MALI_FB)
++#if !defined(USE_EGL_X11) && !defined(USE_EGL_MALI_FB) && !defined(USE_EGL_RPI)
+ #include <gst/video/gstvideopool.h>
+ 
+ /* Dummy functions for creating a native Window */
+@@ -665,3 +665,109 @@ platform_free_eglimage (EGLDisplay display, EGLContext context, GLuint tex_id,
+   g_assert_not_reached ();
+ }
+ #endif
++
++#ifdef USE_EGL_RPI
++#include <bcm_host.h>
++#include <gst/video/gstvideopool.h>
++
++typedef struct
++{
++  EGL_DISPMANX_WINDOW_T w;
++} RPIWindowData;
++
++EGLNativeWindowType
++platform_create_native_window (gint width, gint height, gpointer * window_data)
++{
++  DISPMANX_ELEMENT_HANDLE_T dispman_element;
++  DISPMANX_DISPLAY_HANDLE_T dispman_display;
++  DISPMANX_UPDATE_HANDLE_T dispman_update;
++  RPIWindowData *data;
++  VC_RECT_T dst_rect;
++  VC_RECT_T src_rect;
++
++  uint32_t dp_height;
++  uint32_t dp_width;
++
++  int ret;
++
++  ret = graphics_get_display_size (0, &dp_width, &dp_height);
++  if (ret < 0) {
++    GST_ERROR ("Can't open display");
++    return (EGLNativeWindowType) 0;
++  }
++  GST_DEBUG ("Got display size: %dx%d\n", dp_width, dp_height);
++  GST_DEBUG ("Source size: %dx%d\n", width, height);
++
++  dst_rect.x = 0;
++  dst_rect.y = 0;
++  dst_rect.width = dp_width;
++  dst_rect.height = dp_height;
++
++  src_rect.x = 0;
++  src_rect.y = 0;
++  src_rect.width = width << 16;
++  src_rect.height = height << 16;
++
++  dispman_display = vc_dispmanx_display_open (0);
++  dispman_update = vc_dispmanx_update_start (0);
++  dispman_element = vc_dispmanx_element_add (dispman_update,
++      dispman_display, 0, &dst_rect, 0, &src_rect,
++      DISPMANX_PROTECTION_NONE, 0, 0, 0);
++
++  *window_data = data = g_slice_new0 (RPIWindowData);
++  data->w.element = dispman_element;
++  data->w.width = width;
++  data->w.height = height;
++  vc_dispmanx_update_submit_sync (dispman_update);
++
++  return (EGLNativeWindowType) data;
++}
++
++gboolean
++platform_destroy_native_window (EGLNativeDisplayType display,
++    EGLNativeWindowType window, gpointer * window_data)
++{
++  DISPMANX_DISPLAY_HANDLE_T dispman_display;
++  DISPMANX_UPDATE_HANDLE_T dispman_update;
++  RPIWindowData *data = *window_data;
++
++  dispman_display = vc_dispmanx_display_open (0);
++  dispman_update = vc_dispmanx_update_start (0);
++  vc_dispmanx_element_remove (dispman_update, data->w.element);
++  vc_dispmanx_update_submit_sync (dispman_update);
++
++  g_slice_free (RPIWindowData, data);
++  *window_data = NULL;
++  return TRUE;
++}
++
++gboolean
++platform_can_map_eglimage (GstMemoryMapFunction * map,
++    GstMemoryUnmapFunction * unmap, PlatformMapVideo * video_map,
++    PlatformUnmapVideo * video_unmap)
++{
++  return FALSE;
++}
++
++gboolean
++platform_has_custom_eglimage_alloc (void)
++{
++  return FALSE;
++}
++
++gboolean
++platform_alloc_eglimage (EGLDisplay display, EGLContext context, GLint format,
++    GLint type, gint width, gint height, GLuint tex_id, EGLImageKHR * image,
++    gpointer * image_platform_data)
++{
++  g_assert_not_reached ();
++  return FALSE;
++}
++
++void
++platform_free_eglimage (EGLDisplay display, EGLContext context, GLuint tex_id,
++    EGLImageKHR * image, gpointer * image_platform_data)
++{
++  g_assert_not_reached ();
++}
++#endif
+-- 
+1.8.1.1
+

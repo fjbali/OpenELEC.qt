@@ -1,6 +1,4 @@
 ################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2012 Stephan Raue (stephan@openelec.tv)
 #
 #  This Program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,19 +16,34 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="freetype"
-PKG_VERSION="2.4.10"
+PKG_NAME="gstreamer"
+PKG_VERSION="master"
 PKG_REV="1"
 PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="http://www.freetype.org"
-PKG_URL="http://download.savannah.gnu.org/releases/freetype/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS="zlib"
-PKG_BUILD_DEPENDS="toolchain zlib"
+PKG_LICENSE="OSS"
+PKG_SITE="http://gstreamer.freedesktop.org/gstreamer"
+#PKG_URL="http://gstreamer.freedesktop.org/src/gstreamer/$PKG_NAME-$PKG_VERSION.tar.xz"
+
+case $TARGET_ARCH in
+	i386)
+		PKG_DEPENDS="toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+		PKG_BUILD_DEPENDS="toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+	;;
+	x86_64)
+		PKG_DEPENDS="toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+		PKG_BUILD_DEPENDS="toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+	;;
+	arm)
+		PKG_DEPENDS="bcm2835-driver toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+		PKG_BUILD_DEPENDS="bcm2835-driver toolchain libpng tiff dbus fontconfig linux-headers eglibc zlib"
+	;;
+esac
+
 PKG_PRIORITY="optional"
-PKG_SECTION="print"
-PKG_SHORTDESC="freetype: TrueType font rendering library"
-PKG_LONGDESC="The FreeType engine is a free and portable TrueType font rendering engine. It has been developed to provide TT support to a great variety of platforms and environments."
+PKG_SECTION="lib"
+PKG_SHORTDESC="gstreamer library"
+PKG_LONGDESC="gstreamer library and components"
 PKG_IS_ADDON="no"
 
 PKG_AUTORECONF="no"
+

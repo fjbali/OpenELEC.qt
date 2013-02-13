@@ -116,6 +116,9 @@ IMAGE_NAME="$DISTRONAME-$TARGET_VERSION"
 # Graphic support
   [ ! "$DISPLAYSERVER" = "no" ] && $SCRIPTS/install $DISPLAYSERVER
 
+# Qt support
+  [ "$QT5DEV" = "yes" ] && $SCRIPTS/install qt5dev
+
 # Multimedia support
   [ ! "$MEDIACENTER" = "no" ] && $SCRIPTS/install mediacenter
 

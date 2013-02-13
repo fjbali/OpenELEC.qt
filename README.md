@@ -1,24 +1,44 @@
-[OpenELEC](http://www.openelec.tv)
+# OpenELEC (Qt development)
 
-# OpenELEC - Open Embedded Linux Entertainment Center
+This fork contains additional projects and packages to make OpenELEC a multi-purpose
+linux distribution for application development using Qt5.
 
-OpenELEC runs [XBMC](http://xbmc.org), an award-winning free and open source (GPL) software media 
-player and entertainment hub for digital media. For more info see http://xbmc.org .
-The base system has been designed and built from the ground up to be as 
-efficient as possible – consuming only tiny disk and memory footprints and
-providing cutting edge hardware support to deliver a set-top box experience.
+The goal is to create a minimal linux distribution ready for cross development using Qt5.
+For that, some additional packages will be available:
 
-**Source code**
+- QT5 including the following modules
+   - qtjsbackend
+   - qtimageformats
+   - qtsvg
+   - qtscript
+   - qtxmlpatterns
+   - qtdeclarative
+   - qtgraphicaleffects
+   - qtquick1
+   - qtmultimedia
 
-* https://github.com/OpenELEC/OpenELEC.tv
+- GStreamer-1.0.5
+   - gst-plugins-base-1.0.5
+   - gst-plugins-good-1.0.5
+   - gst-plugins-bad-1.0.5
+   - gst-omx (latest repository clone (master branch))
+
+**Important Notes**
+
+It is in a quite early state, so don't expect anything to work out of the box, yet. By the time writing this,
+gstreamer is not working, and so is qtmultimedia.
 
 **Installation**
 
-* Please read INSTALL for instructions on how to install.
+Just build one of the \*Qt projects. But don't forget to add textmode to you cmdline.txt.
+Otherwise boot will fail with a kernel panic, due to missing init scripts.
 
-**Known issues**
+**ToDo**
 
-* Testing snapshot
+- Get OpenMAX IL working
+- Correct some path issues with Qt5 (examples will fail to run if you don't set QT_PLUGIN_PATH=/usr/plugins, QML_IMPORT_PATH=/usr/imports; currently set by profile.d/qt5.conf)
+- Get audio playback working (qmlvideo will fail to choose the correct audiosink; dont know wether one of them works, yet.)
+- Clean up and tidy messy scripts
 
 **License**
 
@@ -42,22 +62,6 @@ providing cutting edge hardware support to deliver a set-top box experience.
   If you are submitting code that is not your own work it is the submitters 
   responsibility to place a header stating the copyright. 
 
-**Features**
-
-* System size ~ 90 - 130MB
-* Minimal hardware requirements
-* Ultra fast boot
-* Optimized builds for platforms such as ION, Intel, Fusion
-* Simple configuration via XBMC itself
-* Plug and Play external storage
-
-**Software**
-
-* XBMC HTPC software – View/Manage all your media.
-* Samba server – File transfer from any PC client
-* SSH server – Remote console access for debugging
-* IR/Bluetooth Remote Control
-
 **Notes**
 
 * SSH login details are user: “root” password: “openelec”.
@@ -71,7 +75,7 @@ providing cutting edge hardware support to deliver a set-top box experience.
   read-only with the exception of /var (containing runtime configuration data).
 * Manual update/downgrade procedure is as follows:
   Extract the snapshot and navigate to the 'target' directory.
-  Copy KERNEL and SYSTEM along with KERNEL.md5 and SYSTEM.md5 to the 'Update' network share (or /storage/.update) on
+  Copy KERNEL and SYSTEM to the 'Update' network share (or /storage/.update) on
   your openelec machine. Your system will automatically upgrade during the 
   next reboot.
 * Automatic mounting of filesystems is supported. Devices such as USB Flash 

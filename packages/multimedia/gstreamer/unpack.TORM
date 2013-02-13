@@ -1,6 +1,8 @@
+#!/bin/sh
+
 ################################################################################
-#      This file is part of OpenELEC - http://www.openelec.tv
-#      Copyright (C) 2009-2012 Stephan Raue (stephan@openelec.tv)
+#
+#      Copyright (C) 2012 4K-IT UG (info@4kit.de)
 #
 #  This Program is free software; you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -18,19 +20,11 @@
 #  http://www.gnu.org/copyleft/gpl.html
 ################################################################################
 
-PKG_NAME="freetype"
-PKG_VERSION="2.4.10"
-PKG_REV="1"
-PKG_ARCH="any"
-PKG_LICENSE="GPL"
-PKG_SITE="http://www.freetype.org"
-PKG_URL="http://download.savannah.gnu.org/releases/freetype/$PKG_NAME-$PKG_VERSION.tar.bz2"
-PKG_DEPENDS="zlib"
-PKG_BUILD_DEPENDS="toolchain zlib"
-PKG_PRIORITY="optional"
-PKG_SECTION="print"
-PKG_SHORTDESC="freetype: TrueType font rendering library"
-PKG_LONGDESC="The FreeType engine is a free and portable TrueType font rendering engine. It has been developed to provide TT support to a great variety of platforms and environments."
-PKG_IS_ADDON="no"
+. config/options $1
 
-PKG_AUTORECONF="no"
+#mkdir $BUILD/${PKG_NAME}-${PKG_VERSION}
+
+#tar -xzf $SOURCES/$1/qt-everywhere-opensource-src-5.0.0-beta1.tar.gz -d $BUILD/${PKG_NAME}-${PKG_VERSION} >/dev/null 2>&1
+tar -xzf $SOURCES/$1/qt-everywhere-opensource-src-5.0.0-beta1.tar.gz -C $BUILD/
+mv $BUILD/qt-everywhere-opensource-src-5.0.0-beta1 $BUILD/${PKG_NAME}-${PKG_VERSION}
+

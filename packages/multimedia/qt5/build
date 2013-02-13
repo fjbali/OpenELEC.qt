@@ -1,0 +1,146 @@
+#!/bin/sh
+
+################################################################################
+#
+#  Copyright (C) 2012 4K-IT UG (info@4kit.de)
+#
+#  This Program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2, or (at your option)
+#  any later version.
+#
+#  This Program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+#  GNU General Public License for more details.
+#
+#  You should have received a copy of the GNU General Public License
+#  along with OpenELEC.tv; see the file COPYING.  If not, write to
+#  the Free Software Foundation, 51 Franklin Street, Suite 500, Boston, MA 02110, USA.
+#  http://www.gnu.org/copyleft/gpl.html
+#
+#  Issues:
+#
+#    * set QT_PLUGIN_PATH to execute the application
+#    * set QML_IMPORT_PATH
+#
+################################################################################
+
+. config/options $1
+
+cd $BUILD/${PKG_NAME}-${PKG_VERSION}
+
+export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$SYSROOT_PREFIX/lib/pkgconfig"
+
+unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+export QT_FORCE_PKGCONFIG=yes
+unset QMAKESPEC
+
+mkdir -p $SYSROOT_PREFIX/usr
+
+case $TARGET_ARCH in
+	i386)
+		export QMAKE_INCDIR_OPENGL=$SYSROOT_PREFIX/
+		export QMAKE_LIBDIR_OPENGL=$SYSROOT_PREFIX/
+		#QMAKE_LIBS_OPENGL=$SYSROOT_PREFIX/
+
+		./configure  	-prefix $SYSROOT_PREFIX/usr \
+				-release \
+				-opensource \
+				-confirm-license \
+				-opengl \
+				-no-pch \
+				-optimized-qmake \
+				-make libs \
+				-make examples \
+				-nomake tests 
+	;;
+	x86_64)
+		export QMAKE_INCDIR_OPENGL=$SYSROOT_PREFIX/usr/include/GL
+		export QMAKE_LIBDIR_OPENGL=$SYSROOT_PREFIX/usr/lib
+		#QMAKE_LIBS_OPENGL=$SYSROOT_PREFIX/
+
+		./configure  	-prefix $SYSROOT_PREFIX/usr \
+				-release \
+				-opensource \
+				-confirm-license \
+				-no-pch \
+				-opengl \
+				-optimized-qmake \
+				-make libs \
+				-make examples \
+				-nomake tests 
+	;;
+	arm)
+		# need to copy platform_types.h to be recognized by EGL tests
+		cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform_types.h $SYSROOT_PREFIX/usr/include/interface/vcos/
+		cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform.h $SYSROOT_PREFIX/usr/include/interface/vcos/
+		cp $SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux/vchost_config.h $SYSROOT_PREFIX/usr/include/interface/vmcs_host/
+
+		./configure  	-prefix $SYSROOT_PREFIX/usr \
+				-release \
+				-opensource \
+				-confirm-license \
+				-no-pch \
+				-optimized-qmake \
+				-device linux-rasp-pi-g++ \
+				-opengl \
+				-device-option CROSS_COMPILE=$ROOT/$TOOLCHAIN/bin/armv6zk-openelec-linux-gnueabi- \
+				-I $SYSROOT_PREFIX/usr/include/interface/vmcs_host \
+				-make libs \
+				-make examples \
+				-nomake tests 
+	;;
+esac
+
+
+cd qtbase
+make && make install
+
+cd ../qtimageformats
+../qtbase/bin/qmake && make && make install
+
+cd ../qtsvg
+../qtbase/bin/qmake && make && make install
+
+cd ../qtjsbackend
+../qtbase/bin/qmake && make && make install
+
+cd ../qtscript
+../qtbase/bin/qmake && make && make install
+
+cd ../qtxmlpatterns
+../qtbase/bin/qmake && make && make install
+
+cd ../qtdeclarative
+../qtbase/bin/qmake && make && make install
+
+#cd ../qtsensors
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qt3d
+#../qtbase/bin/qmake && make && make install
+
+cd ../qtgraphicaleffects
+../qtbase/bin/qmake && make && make install
+
+# does not exists yet
+#cd ../qtjsondb
+#../qtbase/bin/qmake && make && make install
+
+# missing qtgui and qtcore yet
+#cd ../qtlocation
+#../qtbase/bin/qmake && make && make install
+
+# does not exists yet
+#cd ../qtdocgallery
+#../qtbase/bin/qmake && make && make install
+
+cd ../qtquick1
+../qtbase/bin/qmake && make && make install
+
+#cd ../qtmultimedia
+#../qtbase/bin/qmake && make && make install
+
+#$MAKEINSTALL
+
