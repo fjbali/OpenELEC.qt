@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<advancedsettings>
+  <cputempcommand>cputemp</cputempcommand>
+  <gputempcommand>cputemp</gputempcommand>
+  <showexitbutton>false</showexitbutton>
+
+  <destroywindowcontrols>false</destroywindowcontrols>
+  <fanartres>540</fanartres>
+  <imageres>256</imageres>
+  <bginfoloadermaxthreads>2</bginfoloadermaxthreads>
+  <useddsfanart>false</useddsfanart>
+
+  <video>
+    <defaultplayer>omxplayer</defaultplayer>
+    <defaultdvdplayer>omxplayer</defaultdvdplayer>
+  </video>
+
+  <audio>
+    <defaultplayer>omxplayer</defaultplayer>
+    <streamsilence>false</streamsilence>
+  </audio>
+
+  <network>
+    <cachemembuffersize>5282880</cachemembuffersize>
+  </network>
+
+  <samba>
+    <clienttimeout>30</clienttimeout>
+  </samba>
+
+</advancedsettings>
