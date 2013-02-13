@@ -29,9 +29,13 @@ if [ -z "$1" ]; then
   done
 fi
 
-[ -z "$PKG_URL" ] && exit 0
-
-if [ -n "$PKG_URL" ]; then
+if [ -z "$PKG_URL" ]; then
+  if [ -e $PKG_DIR/get ]; then
+    $PKG_DIR/get $1
+  else
+    exit 0
+  fi
+elif [ -n "$PKG_URL" ]; then
   URLS="$URLS `echo $PKG_URL | sed s%GEEXBOX_SRCS%$GEEXBOX_SRCS%`"
 
   for i in $URLS; do
