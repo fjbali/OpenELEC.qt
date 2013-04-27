@@ -14,7 +14,7 @@ For that, some additional packages will be available:
    - qtxmlpatterns
    - qtdeclarative
    - qtgraphicaleffects
-   - qtquick1
+   - qtquick
    - qtmultimedia
 
 - GStreamer-1.0.5
@@ -25,17 +25,26 @@ For that, some additional packages will be available:
 
 **Important Notes**
 
-It is in a quite early state, so don't expect anything to work out of the box, yet. By the time writing this,
-gstreamer is not working, and so is qtmultimedia.
+It is in a quite early state, so don't expect anything to work out of the box, yet. By the time writing this, gstreamer is not working, and so is qtmultimedia.
+
+**Ubuntu Notes**
+When building the first time, besides the required packages installed during build, you probably also need libexpat-dev and perl XML::Parser.
+
+Just install that with
+
+sudo apt-get install libexpat-dev
+cpan -i XML::Parser
+
+**QT Creator Notes**
+
+Install Qt Creator and setup the ARM toolchain by adding a new gcc compiler (in build.xxx/toolchain/bin) and the qt5 (qmake in build.xxx/toolchain/arm-xxx/usr/bin). You also have to setup your Raspberry Pi as a generic linux device. Then you're ready to compile your projects and run them remotely on your Raspberry Pi.
 
 **Installation**
 
-Just build one of the \*Qt projects. But don't forget to add textmode to you cmdline.txt.
-Otherwise boot will fail with a kernel panic, due to missing init scripts.
+Just build one of the projects (currently qt5 will only build for RPi). But don't forget to add textmode to you cmdline.txt. Otherwise boot will fail with a kernel panic, due to missing init scripts.
 
 **ToDo**
 
-- Get OpenMAX IL working
 - Correct some path issues with Qt5 (examples will fail to run if you don't set QT_PLUGIN_PATH=/usr/plugins, QML_IMPORT_PATH=/usr/imports; currently set by profile.d/qt5.conf)
 - Get audio playback working (qmlvideo will fail to choose the correct audiosink; dont know wether one of them works, yet.)
 - Clean up and tidy messy scripts
