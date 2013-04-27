@@ -106,7 +106,7 @@
   SQUASHFS_COMPRESSION="lzo"
 
 # Mediacenter to use (xbmc / no)
-  MEDIACENTER="xbmc"
+  MEDIACENTER="no"
 
 # Skins to install (Confluence)
 # Space separated list is supported,
@@ -324,7 +324,7 @@
   TESTING="no"
 
 # OEM packages for OEM's (yes / no)
-  OEM_SUPPORT="no"
+  OEM_SUPPORT="yes"
 
 # build and install nano text editor (yes / no)
   NANO_EDITOR="yes"

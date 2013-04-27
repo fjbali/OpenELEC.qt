@@ -62,7 +62,9 @@ case $TARGET_ARCH in
 			--disable-maintainer-mode \
 			--disable-dependency-tracking \
 			--disable-static \
-			--with-omx-struct-packing=4
+			--with-omx-target=rpi \
+			--with-omx-struct-packing=4 \
+			CFLAGS="-Wno-error -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/ -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/khronos/IL"
 	;;
 esac
 
