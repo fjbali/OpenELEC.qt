@@ -72,6 +72,7 @@ case $TARGET_ARCH in
 			--disable-shm \
 			--disable-mfc \
 			--disable-dvb \
+			--disable-hls \
 			--enable-eglgles \
 			--with-egl-window-system=rpi \
 			--with-default-audiosink=oss4 \
