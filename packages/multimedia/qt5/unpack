@@ -25,6 +25,6 @@
 #mkdir $BUILD/${PKG_NAME}-${PKG_VERSION}
 
 #tar -xzf $SOURCES/$1/qt-everywhere-opensource-src-5.0.0-beta2.tar.gz -C $BUILD/
-tar -xzf $SOURCES/$1/qt-everywhere-opensource-src-5.0.0.tar.gz -C $BUILD/
-mv $BUILD/qt-everywhere-opensource-src-5.0.0 $BUILD/${PKG_NAME}-${PKG_VERSION}
+tar -xzf $SOURCES/$1/qt-everywhere-opensource-src-${PKG_VERSION}.tar.gz -C $BUILD/
+mv $BUILD/qt-everywhere-opensource-src-${PKG_VERSION} $BUILD/${PKG_NAME}-${PKG_VERSION}
 
