@@ -22,15 +22,22 @@
 
 . config/options $1
 
-mkdir -p $INSTALL/usr
-  cp -R $SYSROOT_PREFIX/usr/lib/libQt* $INSTALL/usr/lib/ || true
+mkdir -p $INSTALL/usr/local
+  cp -R $SYSROOT_PREFIX/usr/local/Qt* $INSTALL/usr/local/ || true
+
+#mkdir -p $INSTALL/usr
+#  cp -R $SYSROOT_PREFIX/usr/lib/libQt* $INSTALL/usr/lib/ || true
   #cp -R $SYSROOT_PREFIX/usr/lib/libq* $INSTALL/usr/lib/ || true
 
-mkdir -p $INSTALL/usr/plugins
-  cp -R $SYSROOT_PREFIX/usr/plugins/* $INSTALL/usr/plugins/ || true
+#mkdir -p $INSTALL/usr/plugins
+#  cp -R $SYSROOT_PREFIX/usr/plugins/* $INSTALL/usr/plugins/ || true
 
-mkdir -p $INSTALL/usr/examples
-  cp -R $SYSROOT_PREFIX/usr/examples/* $INSTALL/usr/examples/ || true
+#mkdir -p $INSTALL/usr/examples
+#  cp -R $SYSROOT_PREFIX/usr/examples/* $INSTALL/usr/examples/ || true
 
-mkdir -p $INSTALL/usr/imports
-  cp -R $SYSROOT_PREFIX/usr/imports/* $INSTALL/usr/imports/ || true
+#mkdir -p $INSTALL/usr/imports
+#  cp -R $SYSROOT_PREFIX/usr/imports/* $INSTALL/usr/imports/ || true
+
+#mkdir -p $INSTALL/usr/qml
+#  cp -R $SYSROOT_PREFIX/usr/qml/* $INSTALL/usr/qml/ || true
+

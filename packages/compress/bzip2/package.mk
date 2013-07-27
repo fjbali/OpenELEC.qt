@@ -26,6 +26,7 @@ PKG_LICENSE="GPL"
 PKG_SITE="http://www.bzip.org"
 PKG_URL="http://www.bzip.org/$PKG_VERSION/$PKG_NAME-$PKG_VERSION.tar.gz"
 PKG_DEPENDS=""
+PKG_BUILD_DEPENDS_HOST="toolchain"
 PKG_BUILD_DEPENDS_TARGET="toolchain"
 PKG_PRIORITY="optional"
 PKG_SECTION="compress"
@@ -39,12 +40,32 @@ pre_make_target() {
   sed -e "s,ln -s (lib.*),ln -snf \$$1; ln -snf libbz2.so.$PKG_VERSION libbz2.so,g" -i Makefile-libbz2_so
 }
 
+pre_make_host() {
+  sed -e "s,ln -s (lib.*),ln -snf \$$1; ln -snf libbz2.so.$PKG_VERSION libbz2.so,g" -i Makefile-libbz2_so
+  make -f Makefile-libbz2_so clean
+}
+
+make_host() {
+  make -f Makefile-libbz2_so CFLAGS="$CFLAGS -fPIC -DPIC"
+}
+
 make_target() {
   make -f Makefile-libbz2_so CC=$TARGET_CC CFLAGS="$CFLAGS -fPIC -DPIC"
 }
 
+post_make_host() {
+  ln -snf libbz2.so.1.0 libbz2.so
+}
+
 post_make_target() {
   ln -snf libbz2.so.1.0 libbz2.so
+}
+
+makeinstall_host() {
+  mkdir -p $ROOT/$TOOLCHAIN/include
+    cp bzlib.h $ROOT/$TOOLCHAIN/include
+  mkdir -p $ROOT/$TOOLCHAIN/lib
+    cp -P libbz2.so* $ROOT/$TOOLCHAIN/lib
 }
 
 makeinstall_target() {
