@@ -77,43 +77,67 @@ case $TARGET_ARCH in
 		cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform.h $SYSROOT_PREFIX/usr/include/interface/vcos/
 		cp $SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux/vchost_config.h $SYSROOT_PREFIX/usr/include/interface/vmcs_host/
 
-		./configure  	-prefix $SYSROOT_PREFIX/usr \
+		#./configure  	-prefix $SYSROOT_PREFIX/usr \
+		./configure  	\
 				-release \
 				-opensource \
 				-confirm-license \
 				-no-pch \
 				-optimized-qmake \
+				-compile-examples \
+				-skip qtwebkit \
+				-silent \
 				-device linux-rasp-pi-g++ \
 				-opengl \
 				-device-option CROSS_COMPILE=$ROOT/$TOOLCHAIN/bin/armv6zk-openelec-linux-gnueabi- \
 				-I $SYSROOT_PREFIX/usr/include/interface/vmcs_host \
 				-make libs \
-				-make examples \
+				-nomake examples \
 				-nomake tests 
 	;;
 esac
 
 
-cd qtbase
-make && make install
+make -j1 && make INSTALL_ROOT=$SYSROOT_PREFIX install
 
-cd ../qtimageformats
-../qtbase/bin/qmake && make && make install
+#cd qtbase
+#make && make INSTALL_ROOT=$SYSROOT_PREFIX install
 
-cd ../qtsvg
-../qtbase/bin/qmake && make && make install
+#cd ../qtactiveqt
+#../qtbase/bin/qmake && make && make install
 
-cd ../qtjsbackend
-../qtbase/bin/qmake && make && make install
+#cd ../qtdoc
+#../qtbase/bin/qmake && make && make install
 
-cd ../qtscript
-../qtbase/bin/qmake && make && make install
+#cd ../qtmultimedia
+#../qtbase/bin/qmake && make && make install
 
-cd ../qtxmlpatterns
-../qtbase/bin/qmake && make && make install
+#cd ../qtscript
+#../qtbase/bin/qmake && make && make install
 
-cd ../qtdeclarative
-../qtbase/bin/qmake && make && make install
+#cd ../qtserialport
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qttranslations
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtimageformats
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtsvg
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtjsbackend
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtscript
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtxmlpatterns
+#../qtbase/bin/qmake && make && make install
+
+#cd ../qtdeclarative
+#../qtbase/bin/qmake && make && make install
 
 #cd ../qtsensors
 #../qtbase/bin/qmake && make && make install
@@ -121,8 +145,8 @@ cd ../qtdeclarative
 #cd ../qt3d
 #../qtbase/bin/qmake && make && make install
 
-cd ../qtgraphicaleffects
-../qtbase/bin/qmake && make && make install
+#cd ../qtgraphicaleffects
+#../qtbase/bin/qmake && make && make install
 
 # does not exists yet
 #cd ../qtjsondb
@@ -136,10 +160,10 @@ cd ../qtgraphicaleffects
 #cd ../qtdocgallery
 #../qtbase/bin/qmake && make && make install
 
-cd ../qtquick1
-../qtbase/bin/qmake && make && make install
+#cd ../qtquick1
+#../qtbase/bin/qmake && make && make install
 
-#cd ../qtmultimedia
+#cd ../qtquickcontrols
 #../qtbase/bin/qmake && make && make install
 
 #$MAKEINSTALL
