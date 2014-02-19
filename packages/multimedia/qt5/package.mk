@@ -72,8 +72,9 @@ configure_target() {
 	cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform.h $SYSROOT_PREFIX/usr/include/interface/vcos/
 	cp $SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux/vchost_config.h $SYSROOT_PREFIX/usr/include/interface/vmcs_host/
 
-	cd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+	pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
 	./configure ${PKG_CONFIGURE_OPTS}
+	popd
 }
 
 make_target() {
@@ -81,8 +82,9 @@ make_target() {
 	export QT_FORCE_PKGCONFIG=yes
 	unset QMAKESPEC
 
-	cd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+	pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
     make
+	popd
 }
 
 makeinstall_target() {
@@ -90,15 +92,20 @@ makeinstall_target() {
 	export QT_FORCE_PKGCONFIG=yes
 	unset QMAKESPEC
 
-	cd ${ROOT}/${PKG_BUILD}
+	pushd ${ROOT}/${PKG_BUILD}
 	make install
+	popd
+}
+
+pre_install() {
+	makeinstall_target
 }
 
 post_install() {
 	# need to remove libc.so and libpthread.so linker scripts to enable cross compilation with qmake.
 	# otherwise it would try to fail when linking with the wrong libraries.
 	
-	rm $INSTALL/usr/lib/libc.so
-	rm $INSTALL/usr/lib/libpthread.so
+	rm $ROOT/$INSTALL/usr/lib/libc.so
+	rm $ROOT/$INSTALL/usr/lib/libpthread.so
 }
 
