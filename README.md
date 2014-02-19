@@ -43,16 +43,11 @@ Install Qt Creator and setup the ARM toolchain by adding a new gcc compiler (in 
 
 Just build one of the projects (currently qt5 will only build for RPi). But don't forget to add textmode to you cmdline.txt. Otherwise boot will fail with a kernel panic, due to missing init scripts.
 
-<<<<<<< HEAD
 Just build one of the \*Qt projects. But don't forget to add textmode to you cmdline.txt.
 Otherwise boot will fail with a kernel panic, due to missing init scripts.
 
 **ToDo**
 
-=======
-**ToDo**
-
-- Get OpenMAX IL working
 - Correct some path issues with Qt5 (examples will fail to run if you don't set QT_PLUGIN_PATH=/usr/plugins, QML_IMPORT_PATH=/usr/imports; currently set by profile.d/qt5.conf)
 - Get audio playback working (qmlvideo will fail to choose the correct audiosink; dont know wether one of them works, yet.)
 - Clean up and tidy messy scripts
