@@ -3,4 +3,4 @@
 export PROJECT=RPi
 export ARCH=arm
 
-make > log.txt 2>&1
+make > log_${PROJECT}.txt 2>&1

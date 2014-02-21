@@ -34,27 +34,48 @@ PKG_LONGDESC="gstreamer good plugins"
 PKG_IS_ADDON="no"
 PKG_AUTORECONF="no"
 
-PKG_CONFIGURE_OPTS="-v \
-				    -prefix ${ROOT}/${BUILD}/image/system/usr \
-				    -hostprefix ${SYSROOT_PREFIX}/usr \
-					-release \
-					-opensource \
-					-confirm-license \
-					-no-pch \
-					-no-rpath \
-					-optimized-qmake \
-					-compile-examples \
-					-skip qtwebkit \
-					-silent \
-					-device linux-rasp-pi-g++ \
-					-device-option CROSS_COMPILE=${ROOT}/${TOOLCHAIN}/bin/armv6zk-openelec-linux-gnueabi- \
-					-opengl \
-					-I $SYSROOT_PREFIX/usr/include/interface/vmcs_host \
-					-I $SYSROOT_PREFIX/usr/include/gstreamer-1.0 \
-					-I $SYSROOT_PREFIX/usr/include/glib-2.0 \
-					-I $SYSROOT_PREFIX/usr/lib/glib-2.0/include \
-					-make libs \
-					-nomake tests"
+case $PROJECT in
+	Generic)
+		PKG_CONFIGURE_OPTS="-v \
+							-prefix ${ROOT}/${BUILD}/image/system/usr \
+							-hostprefix ${SYSROOT_PREFIX}/usr \
+							-release \
+							-opensource \
+							-confirm-license \
+							-no-pch \
+							-no-rpath \
+							-optimized-qmake \
+							-compile-examples \
+							-skip qtwebkit \
+							-silent \
+							-opengl \
+							-make libs \
+							-nomake tests"
+	;;
+	RPi)
+		PKG_CONFIGURE_OPTS="-v \
+							-prefix ${ROOT}/${BUILD}/image/system/usr \
+							-hostprefix ${SYSROOT_PREFIX}/usr \
+							-release \
+							-opensource \
+							-confirm-license \
+							-no-pch \
+							-no-rpath \
+							-optimized-qmake \
+							-compile-examples \
+							-skip qtwebkit \
+							-silent \
+							-device linux-rasp-pi-g++ \
+							-device-option CROSS_COMPILE=${ROOT}/${TOOLCHAIN}/bin/armv6zk-openelec-linux-gnueabi- \
+							-opengl \
+							-I $SYSROOT_PREFIX/usr/include/interface/vmcs_host \
+							-I $SYSROOT_PREFIX/usr/include/gstreamer-1.0 \
+							-I $SYSROOT_PREFIX/usr/include/glib-2.0 \
+							-I $SYSROOT_PREFIX/usr/lib/glib-2.0/include \
+							-make libs \
+							-nomake tests"
+	;;
+esac
 
 unpack() {
 
@@ -64,37 +85,72 @@ unpack() {
 
 configure_target() {
 
-	unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
-	export QT_FORCE_PKGCONFIG=yes
-	unset QMAKESPEC
+	case $PROJECT in
+		Generic)
+			unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+			export QT_FORCE_PKGCONFIG=yes
+			unset QMAKESPEC
 
-	cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform_types.h $SYSROOT_PREFIX/usr/include/interface/vcos/
-	cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform.h $SYSROOT_PREFIX/usr/include/interface/vcos/
-	cp $SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux/vchost_config.h $SYSROOT_PREFIX/usr/include/interface/vmcs_host/
-
-	pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
-	./configure ${PKG_CONFIGURE_OPTS}
-	popd
+			pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+			./configure ${PKG_CONFIGURE_OPTS}
+			popd
+		;;
+		RPi)
+			unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+			export QT_FORCE_PKGCONFIG=yes
+			unset QMAKESPEC
+		
+			cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform_types.h $SYSROOT_PREFIX/usr/include/interface/vcos/
+			cp $SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/vcos_platform.h $SYSROOT_PREFIX/usr/include/interface/vcos/
+			cp $SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux/vchost_config.h $SYSROOT_PREFIX/usr/include/interface/vmcs_host/
+		
+			pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+			./configure ${PKG_CONFIGURE_OPTS}
+			popd
+		;;
+	esac
 }
 
 make_target() {
-	unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
-	export QT_FORCE_PKGCONFIG=yes
-	unset QMAKESPEC
+	case $PROJECT in
+		Generic)
+			unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+			export QT_FORCE_PKGCONFIG=yes
+			unset QMAKESPEC
 
-	pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
-    make
-	popd
+			pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+			make
+			popd
+		;;
+		RPi)
+			unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+			export QT_FORCE_PKGCONFIG=yes
+			unset QMAKESPEC
+		
+			pushd ${ROOT}/${BUILD}/${PKG_NAME}-${PKG_VERSION}
+			make
+			popd
+		;;
+	esac
 }
 
 makeinstall_target() {
-	unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
-	export QT_FORCE_PKGCONFIG=yes
-	unset QMAKESPEC
-
-	pushd ${ROOT}/${PKG_BUILD}
-	make install
-	popd
+	case $PROJECT in
+		Generic)
+			pushd ${ROOT}/${PKG_BUILD}
+			make install
+			popd
+		;;
+		RPi)
+			unset CC CXX AR OBJCOPY STRIP CFLAGS CXXFLAGS CPPFLAGS LDFLAGS LD RANLIB
+			export QT_FORCE_PKGCONFIG=yes
+			unset QMAKESPEC
+		
+			pushd ${ROOT}/${PKG_BUILD}
+			make install
+			popd
+		;;
+	esac
 }
 
 pre_install() {
@@ -102,10 +158,16 @@ pre_install() {
 }
 
 post_install() {
-	# need to remove libc.so and libpthread.so linker scripts to enable cross compilation with qmake.
-	# otherwise it would try to fail when linking with the wrong libraries.
-	
-	rm $ROOT/$INSTALL/usr/lib/libc.so
-	rm $ROOT/$INSTALL/usr/lib/libpthread.so
+	case $PROJECT in
+		Generic)
+		;;
+		RPi)
+			# need to remove libc.so and libpthread.so linker scripts to enable cross compilation with qmake.
+			# otherwise it would try to fail when linking with the wrong libraries.
+			
+			rm $ROOT/$INSTALL/usr/lib/libc.so
+			rm $ROOT/$INSTALL/usr/lib/libpthread.so
+		;;
+	esac
 }
 
