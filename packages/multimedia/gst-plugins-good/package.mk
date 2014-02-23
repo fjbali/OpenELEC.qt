@@ -24,8 +24,8 @@ PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://gstreamer.freedesktop.org/gstreamer"
 PKG_URL="http://gstreamer.freedesktop.org/src/gst-plugins-good/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo"
-PKG_BUILD_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo"
+PKG_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo pulseaudio"
+PKG_BUILD_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo pulseaudio"
 PKG_PRIORITY="optional"
 PKG_SECTION="lib"
 PKG_SHORTDESC="gstreamer good plugins"
@@ -54,9 +54,11 @@ PKG_CONFIGURE_OPTS_TARGET="	-prefix=/usr \
 
 configure_target(){
 
-	cd $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
+    echo `pwd`
+	
+	#pushd $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
 
-	./configure \
+	../configure \
 		-prefix=/usr \
 		-target=arm-none-linux-gnueabi \
 		-host=arm-none-linux-gnueabi \
@@ -77,6 +79,8 @@ configure_target(){
 		--with-default-videosink=autovideosink \
 		--without-x \
 		CFLAGS="-Wno-error -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/ -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
+
+	#popd
 }
 
 #post_configure_target(){

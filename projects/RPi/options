@@ -142,7 +142,7 @@
   ALSA_SUPPORT="no"
 
 # build and install PulseAudio support (yes / no)
-  PULSEAUDIO_SUPPORT="no"
+  PULSEAUDIO_SUPPORT="yes"
 
 # build and install with non-free support
 # (RAR compression support in XBMC) (yes / no)
