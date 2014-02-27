@@ -51,7 +51,17 @@ esac
 
 case $PROJECT in
 	Generic)
-		PKG_CONFIGURE_OPTS=""
+		PKG_CONFIGURE_OPTS="
+			-prefix=/usr \
+			--disable-maintainer-mode \
+			--disable-dependency-tracking \
+			--disable-silent-rules \
+			--disable-examples \
+			--disable-fatal-warnings \
+			--disable-yadif \
+			--with-default-audiosink=oss4 \
+			--with-default-videosink=autovideosink"
+
 	;;
 	RPi)
 		PKG_CONFIGURE_OPTS="\

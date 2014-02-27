@@ -23,7 +23,14 @@ PKG_ARCH="any"
 PKG_LICENSE="various"
 PKG_SITE="http://www.openelec.tv"
 PKG_URL=""
-PKG_DEPENDS_TARGET="toolchain qt5"
+case $PROJECT in
+	Generic)
+		PKG_DEPENDS_TARGET="toolchain MPlayer qt5"
+	;;
+	RPi)
+		PKG_DEPENDS_TARGET="toolchain qt5"
+	;;
+esac
 PKG_PRIORITY="optional"
 PKG_SECTION="virtual"
 PKG_SHORTDESC="OEM: Metapackage for various OEM packages"

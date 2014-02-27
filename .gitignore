@@ -27,4 +27,4 @@ mkpkg-temp
 *.orig
 
 # build log
-log.txt
+log_*.txt

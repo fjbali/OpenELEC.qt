@@ -23,8 +23,17 @@ PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://qt-project.org"
 PKG_URL="http://download.qt-project.org/official_releases/qt/5.2/5.2.1/single/qt-everywhere-opensource-src-5.2.1.tar.gz"
-PKG_DEPENDS_TARGET="bcm2835-driver bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig eglibc liberation-fonts-ttf font-util font-xfree86-type1 font-misc-misc gstreamer gst-plugins-base gst-plugins-good gst-omx gst-plugins-bad alsa"
-PKG_BUILD_DEPENDS_TARGET="bcm2835-driver bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig mysql openssl linux-headers eglibc gstreamer gst-plugins-base gst-plugins-good gst-omx gst-plugins-bad alsa"
+
+case $PROJECT in
+	Generic)
+		PKG_DEPENDS_TARGET="bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig eglibc liberation-fonts-ttf font-util font-xfree86-type1 font-misc-misc gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad alsa"
+		PKG_BUILD_DEPENDS_TARGET="bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig mysql openssl linux-headers eglibc gstreamer gst-plugins-base gst-plugins-good gst-plugins-bad alsa"
+	;;
+	RPi)
+		PKG_DEPENDS_TARGET="bcm2835-driver bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig eglibc liberation-fonts-ttf font-util font-xfree86-type1 font-misc-misc gstreamer gst-plugins-base gst-plugins-good gst-omx gst-plugins-bad alsa"
+		PKG_BUILD_DEPENDS_TARGET="bcm2835-driver bzip2 Python zlib:host zlib libpng tiff dbus glib fontconfig mysql openssl linux-headers eglibc gstreamer gst-plugins-base gst-plugins-good gst-omx gst-plugins-bad alsa"
+	;;
+esac
 
 PKG_PRIORITY="optional"
 PKG_SECTION="lib"
@@ -53,7 +62,7 @@ case $PROJECT in
 							-nomake tests"
 	;;
 	RPi)
-		PKG_CONFIGURE_OPTS="-v\
+		PKG_CONFIGURE_OPTS="\
 							-prefix ${ROOT}/${BUILD}/image/system/usr \
 							-hostprefix ${SYSROOT_PREFIX}/usr \
 							-release \
@@ -79,15 +88,15 @@ esac
 
 unpack() {
 
-  tar -xzf $SOURCES/${PKG_NAME}/qt-everywhere-opensource-src-${PKG_VERSION}.tar.gz -C $BUILD/
-  mv $BUILD/qt-everywhere-opensource-src-${PKG_VERSION} $BUILD/${PKG_NAME}-${PKG_VERSION}
-  
-  pushd $BUILD/${PKG_NAME}-${PKG_VERSION}
-	echo "removing original qtmultimedia"
-	rm -rf qtmultimedia
-	echo "git clone qtmultimedia (gst-1.0 port)"
-	git clone git://qt.gitorious.org/~ismelykh/qt/qtmultimedia-porting -b gst-1.0 qtmultimedia
-  popd
+	tar -xzf $SOURCES/${PKG_NAME}/qt-everywhere-opensource-src-${PKG_VERSION}.tar.gz -C $BUILD/
+	mv $BUILD/qt-everywhere-opensource-src-${PKG_VERSION} $BUILD/${PKG_NAME}-${PKG_VERSION}
+	
+	pushd $BUILD/${PKG_NAME}-${PKG_VERSION}
+		echo "removing original qtmultimedia"
+		rm -rf qtmultimedia
+		echo "git clone qtmultimedia (gst-1.0 port)"
+		git clone git://qt.gitorious.org/~ismelykh/qt/qtmultimedia-porting -b gst-1.0 qtmultimedia
+	popd
 }
 
 configure_target() {

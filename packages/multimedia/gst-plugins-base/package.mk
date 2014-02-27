@@ -48,7 +48,14 @@ esac
 
 case $PROJECT in
 	Generic)
-		PKG_CONFIGURE_OPTS=""
+		PKG_CONFIGURE_OPTS="
+				--prefix=/usr \
+				--disable-maintainer-mode \
+				--disable-dependency-tracking \
+				--disable-silent-rules \
+				--disable-failing-tests \
+				--disable-fatal-warnings \
+				--disable-examples"
 	;;
 	RPi)
 		PKG_CONFIGURE_OPTS="\
