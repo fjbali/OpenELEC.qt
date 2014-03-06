@@ -28,3 +28,6 @@ mkpkg-temp
 
 # build log
 log_*.txt
+
+# crap
+.DS_Store
