@@ -17,90 +17,29 @@
 ################################################################################
 
 PKG_NAME="gst-plugins-good"
-PKG_VERSION="master"
-PKG_VERSION="1.2.1"
+PKG_VERSION="1.2.3"
 PKG_REV="1"
 PKG_ARCH="any"
 PKG_LICENSE="OSS"
 PKG_SITE="http://gstreamer.freedesktop.org/gstreamer"
-PKG_URL="http://gstreamer.freedesktop.org/src/gst-plugins-good/$PKG_NAME-$PKG_VERSION.tar.xz"
-PKG_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo pulseaudio"
-PKG_BUILD_DEPENDS="glib gstreamer gst-plugins-base libjpeg-turbo pulseaudio"
+PKG_URL="http://gstreamer.freedesktop.org/src/$PKG_NAME/$PKG_NAME-$PKG_VERSION.tar.xz"
+PKG_DEPENDS_TARGET="toolchain libpng tiff dbus fontconfig eglibc zlib gstreamer"
 PKG_PRIORITY="optional"
 PKG_SECTION="lib"
-PKG_SHORTDESC="gstreamer good plugins"
-PKG_LONGDESC="gstreamer good plugins"
+PKG_SHORTDESC="gst-plugins-good"
+PKG_LONGDESC="gst-plugins-good"
 
 PKG_IS_ADDON="no"
-PKG_AUTORECONF="no"
+PKG_AUTORECONF="yes"
 
-PKG_CONFIGURE_OPTS_TARGET="	-prefix=/usr \
-			-target=arm-none-linux-gnueabi \
-			-host=arm-none-linux-gnueabi \
-			--disable-maintainer-mode \
-			--disable-dependency-tracking \
-			--disable-silent-rules \
-			--disable-examples \
-			--disable-gst_v4l2 \
-			--with-default-audiosink=oss4 \
-			--with-default-videosink=autovideosink \
-			CFLAGS=-Wno-error"
+if [ "$XBMCPLAYER_DRIVER" = "bcm2835-driver" ]; then
+  PKG_DEPENDS_TARGET="$PKG_DEPENDS_TARGET bcm2835-driver"
+fi
 
-#pre_build_target() {
-#}
-
-#pre_configure_target(){
-#}
-
-configure_target(){
-
-    echo `pwd`
-	
-	#pushd $ROOT/$BUILD/${PKG_NAME}-${PKG_VERSION}
-
-	../configure \
-		-prefix=/usr \
-		-target=arm-none-linux-gnueabi \
-		-host=arm-none-linux-gnueabi \
-		--with-sysroot=$SYSROOT_PREFIX \
+PKG_CONFIGURE_OPTS_TARGET="\
 		--disable-maintainer-mode \
 		--disable-dependency-tracking \
-		--disable-silent-rules \
-		--disable-examples \
-		--disable-gst_v4l2 \
-		--disable-mpegtsmux \
-		--disable-shm \
-		--disable-mfc \
-		--disable-dvb \
-		--disable-hls \
-		--enable-eglgles \
-		--with-egl-window-system=rpi \
-		--with-default-audiosink=oss4 \
-		--with-default-videosink=autovideosink \
-		--without-x \
-		CFLAGS="-Wno-error -I$SYSROOT_PREFIX/usr/include/interface/vcos/pthreads/ -I$SYSROOT_PREFIX/usr/include/interface/vmcs_host/linux"
-
-	#popd
-}
-
-#post_configure_target(){
-#}
-
-#pre_make_target(){
-#}
-
-#make_target(){
-#}
-
-#post_make_target(){
-#}
-
-#pre_makeinstall_target(){
-#}
-
-#makeinstall_target(){
-#}
-
-#post_makeinstall_target(){
-#}
-
+        --disable-silent-rules \
+        --disable-fatal-warnings \
+		--disable-static \
+		--disable-gst_v4l2"

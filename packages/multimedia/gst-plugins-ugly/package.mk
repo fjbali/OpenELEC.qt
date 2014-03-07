@@ -42,5 +42,3 @@ PKG_CONFIGURE_OPTS_TARGET="\
         --disable-silent-rules \
         --disable-fatal-warnings \
 		--disable-static"
-
-##		--with-sysroot=$SYSROOT_PREFIX \
